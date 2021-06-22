@@ -45,12 +45,9 @@ function images (name, src) {
 
 images.all = [];
 
-for(let i =0; i < pic.length ; i++){
-    //console.log(pic.length);
-    new images(pic[i].split('.')[0], pic[i]);
 
 //console.log(i);
-};
+
 let leftIndex;
 let midleIndex;
 let rightIndex;
@@ -91,14 +88,15 @@ function eventRandom (event) {
         }else if (event.target.id === 'leftImage'){
             images.all[rightIndex].click++;
         }
-        localStorage.setItem( 'images', JSON.stringify( images.all ) );
+       
         render();
     counter++
+    
     } else if (counter = 25 ){
         // imageContainer.removeEventListener('click' , eventRandom);
        
         makeChart();
-
+        localStorage.setItem( 'images', JSON.stringify( images.all ) );
     } 
 }
     
@@ -113,10 +111,6 @@ function listItems (e){
     result.removeEventListener('click' , listItems)
     
 }
-console.log(localStorage);
-render();
-
-
 
 function randomNumber( min, max ) {
     min = Math.ceil( min );
@@ -172,12 +166,20 @@ function randomNumber( min, max ) {
   result.addEventListener('click' ,listItems  );
   
     function localData() {
-     let data = JSON.parse(localStorage.getItem(' images ')); 
-     for(let i = 0; i < data.length; i++){
-     new images(data[i].name , data[i].src , data[i].views++ , data[i].click++ , data[i].rightIndex , data[i].midleIndex , data[i].leftIndex);
-    }
+     let data = JSON.parse(localStorage.getItem('images')); 
+     console.log(data)
+     if (data) {
+       images.all = data;
+     }else
+        {
+        for(let i =0; i < pic.length ; i++){
+          new images(pic[i].split('.')[0], pic[i]);
+      
+       }
+     }
+    
+     render();
   }
     //console.log(data[i].name)
-    render();
+ 
     localData();
-    
