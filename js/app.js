@@ -54,16 +54,15 @@ for(let i =0; i < pic.length ; i++){
 let leftIndex;
 let midleIndex;
 let rightIndex;
+let veiwImage = [];
 
 function render(){
-   
-    //console.log(render);
-
     do {
         leftIndex = randomNumber(0, pic.length - 1);
         midleIndex = randomNumber(0, pic.length - 1);
         rightIndex = randomNumber(0, pic.length - 1);
-    } while ( midleIndex === rightIndex || midleIndex === leftIndex  || leftIndex === rightIndex );
+    } while ( midleIndex === rightIndex || midleIndex === leftIndex  || leftIndex === rightIndex  || veiwImage.includes(leftIndex) || veiwImage.includes(midleIndex) || veiwImage.includes(rightIndex) );
+    
     
 
     leftImage.src = images.all[leftIndex].src;
@@ -73,7 +72,9 @@ function render(){
     images.all[leftIndex].views++;
     images.all[midleIndex].views++;
     images.all[rightIndex].views++;
-
+//console.log(veiwImage);
+    veiwImage=[];
+    veiwImage.push(leftIndex, midleIndex , rightIndex );
     //console.log(images.all);
     imageContainer.addEventListener('click' , eventRandom);
 };
@@ -84,12 +85,13 @@ function eventRandom (event) {
     if(((event.target.id === 'rightImage' || event.target.id === 'midleImage' ) || event.target.id === 'leftImage' ) && counter < 25 ){
         
         if (event.target.id === 'rightImage'){
-            images.all[rightIndex].click++;
+            images.all[leftIndex].click++; 
         } else if (event.target.id === 'midleImage'){
             images.all[midleIndex].click++;
         }else if (event.target.id === 'leftImage'){
-            images.all[leftIndex].click++;
+            images.all[rightIndex].click++;
         }
+        localStorage.setItem( 'images', JSON.stringify( images.all ) );
         render();
     counter++
     } else if (counter = 25 ){
@@ -101,41 +103,20 @@ function eventRandom (event) {
 }
     
 //console.log(counter);
-
-
 function listItems (e){
     for (let i =0; i < images.all.length ; i++){
         let li = document.createElement('li');
         finalResult.appendChild(li);
         li.textContent = `${images.all[i].name} had ${images.all[i].click} votes , and was seen ${images.all[i].views} times .`
-
     }
+   
     result.removeEventListener('click' , listItems)
-}
-
-
-
-
-render();
-//console.log(counter)
-
-//imageContainer.addEventListener('click' , eventRandom);
-
-
-/*const viewResult = document.getElementById('result'); 
-let eventRandom = 'images';
-
-viewResult.addEventListener('click', function(){
-console.log(eventRandom);
-someString = 'images Again';
-})*/
-
-// images.prototype.result(this.views , counter) {
-//     console.log(result);
-//     document.getElementById('finalResult').innerHTML = `${this.name}, had ${click}, vote , and was seen ${views}, times`
-
     
-// }
+}
+console.log(localStorage);
+render();
+
+
 
 function randomNumber( min, max ) {
     min = Math.ceil( min );
@@ -164,7 +145,7 @@ function randomNumber( min, max ) {
         datasets: [{
           label: 'view',
           data: views,
-          backgroundColor: '#39A2DB',
+          backgroundColor: 'rgb(57, 162, 219)' ,
           borderColor: 'rgba(255, 99, 132, 1)',
           borderWidth: 10
         },
@@ -187,8 +168,16 @@ function randomNumber( min, max ) {
     } );
   
   }
-  console.log(makeChart);
 
   result.addEventListener('click' ,listItems  );
   
-  
+    function localData() {
+     let data = JSON.parse(localStorage.getItem(' images ')); 
+     for(let i = 0; i < data.length; i++){
+     new images(data[i].name , data[i].src , data[i].views++ , data[i].click++ , data[i].rightIndex , data[i].midleIndex , data[i].leftIndex);
+    }
+  }
+    //console.log(data[i].name)
+    render();
+    localData();
+    
